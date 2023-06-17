@@ -4,7 +4,7 @@ Project: FluentExtensions
 File: SchemaBuilder+Method+CheckDataBaseDriver.swift
 Created by: Egor Boyko
 Date: 16.01.2022
-Last Fix: 16.06.2023
+Last Fix: 17.06.2023
 Version: 0.0.1
 
 Status: #Complete | #Decorated
@@ -12,9 +12,18 @@ Status: #Complete | #Decorated
 */
 
 import FluentSQL
+#if canImport(MySQLKit)
+import MySQLKit
+#endif
 
 extension SchemaBuilder {
     internal func checkDataBaseDriver() throws {
+        #if !canImport(MySQLKit)
+            throw FluentExtensionsError.CreateUUID
+                .dependencyMySQLKitNotImported(
+                    message: "Required use dependency FluentMySQLDriver"
+                )
+        #else
         var temp: (Bool, Database?) = (false, nil)
         for child in Mirror(reflecting: self).children {
             if let label = child.label, label == dataBasePropertyName {
@@ -34,12 +43,13 @@ extension SchemaBuilder {
                 .builderDoesNotContainDatabase
         }
         
-        if dataBase.configuration.type != dataBaseDriverName {
+   
+        guard let _ = dataBase as? MySQLKit.MySQLDatabase else {
             throw FluentExtensionsError.CreateUUID
                 .unsupportedDataBase(
-                    message: dataBase.configuration.type
+                    message: "You are using \(dataBase.configuration.type)"
                 )
         }
-        
+        #endif
     }
 }
