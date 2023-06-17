@@ -1,7 +1,7 @@
 /*
 
 Project: FluentExtensions
-File: SchemaBuilder+Method+ChackDataBaseDriver.swift
+File: SchemaBuilder+Method+CheckDataBaseDriver.swift
 Created by: Egor Boyko
 Date: 16.01.2022
 Last Fix: 16.06.2023
